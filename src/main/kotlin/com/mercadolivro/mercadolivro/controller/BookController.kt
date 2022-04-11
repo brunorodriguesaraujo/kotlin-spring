@@ -2,10 +2,13 @@ package com.mercadolivro.mercadolivro.controller
 
 import com.mercadolivro.mercadolivro.controller.request.PostBookRequest
 import com.mercadolivro.mercadolivro.controller.request.PutBookRequest
+import com.mercadolivro.mercadolivro.controller.response.BookResponse
 import com.mercadolivro.mercadolivro.extension.toBookModel
-import com.mercadolivro.mercadolivro.model.BookModel
+import com.mercadolivro.mercadolivro.extension.toResponse
 import com.mercadolivro.mercadolivro.service.BookService
 import com.mercadolivro.mercadolivro.service.CustomerService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
@@ -23,22 +26,22 @@ class BookController(
     }
 
     @GetMapping
-    fun getAll(): List<BookModel> {
-        return bookService.findAll()
+    fun getAll(pageable: Pageable): Page<BookResponse> {
+        return bookService.findAll(pageable).map { it.toResponse() }
     }
 
     @GetMapping("/active")
-    fun getActives(): List<BookModel> {
-        return bookService.findActives()
+    fun getActives(pageable: Pageable): Page<BookResponse> {
+        return bookService.findActives(pageable).map { it.toResponse() }
     }
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Int): BookModel {
-        return bookService.findById(id)
+    fun getById(@PathVariable id: Int): BookResponse {
+        return bookService.findById(id).toResponse()
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Int, @RequestBody book: PutBookRequest){
+    fun update(@PathVariable id: Int, @RequestBody book: PutBookRequest) {
         val bookModel = bookService.findById(id)
         bookService.update(book.toBookModel(bookModel))
     }

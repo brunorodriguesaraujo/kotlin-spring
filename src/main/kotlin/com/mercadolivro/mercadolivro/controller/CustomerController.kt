@@ -2,9 +2,12 @@ package com.mercadolivro.mercadolivro.controller
 
 import com.mercadolivro.mercadolivro.controller.request.PostCustomerRequest
 import com.mercadolivro.mercadolivro.controller.request.PutCustomerRequest
+import com.mercadolivro.mercadolivro.controller.response.CustomerResponse
 import com.mercadolivro.mercadolivro.extension.toCustomModel
-import com.mercadolivro.mercadolivro.model.CustomerModel
+import com.mercadolivro.mercadolivro.extension.toResponse
 import com.mercadolivro.mercadolivro.service.CustomerService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
@@ -15,8 +18,8 @@ class CustomerController(
 ) {
 
     @GetMapping
-    fun getAllCustomers(@RequestParam name: String?): List<CustomerModel> {
-        return customerService.getAllCustomers(name)
+    fun getAllCustomers(@RequestParam name: String?, pageable: Pageable): Page<CustomerResponse> {
+        return customerService.getAllCustomers(name, pageable).map { it.toResponse() }
     }
 
     @PostMapping
@@ -26,8 +29,8 @@ class CustomerController(
     }
 
     @GetMapping("/{id}")
-    fun getCustomer(@PathVariable id: Int): CustomerModel {
-        return customerService.findById(id)
+    fun getCustomer(@PathVariable id: Int): CustomerResponse {
+        return customerService.findById(id).toResponse()
     }
 
     @PutMapping("/{id}")
