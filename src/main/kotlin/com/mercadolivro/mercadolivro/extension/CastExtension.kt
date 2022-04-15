@@ -15,7 +15,8 @@ fun PostCustomerRequest.toCustomModel(): CustomerModel {
     return CustomerModel(
         name = this.name,
         email = this.email,
-        status = CustomerStatus.ATIVO
+        status = CustomerStatus.ATIVO,
+        password = this.password
     )
 }
 
@@ -24,7 +25,8 @@ fun PutCustomerRequest.toCustomModel(customerLast: CustomerModel): CustomerModel
         id = customerLast.id,
         name = this.name ?: customerLast.name,
         email = this.email ?: customerLast.email,
-        status = customerLast.status
+        status = customerLast.status,
+        password = customerLast.password
     )
 }
 
